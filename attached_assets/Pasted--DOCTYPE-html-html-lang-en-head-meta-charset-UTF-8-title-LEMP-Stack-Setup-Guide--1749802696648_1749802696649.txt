@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LEMP Stack Setup Guide - Ubuntu 24.04</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 2rem;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      color: #2c3e50;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    h2 {
+      color: #16a085;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 5px;
+      margin-top: 2rem;
+    }
+    code {
+      background-color: #eef;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    pre {
+      background: #272822;
+      color: #f8f8f2;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    ul {
+      margin-left: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>✅ LEMP Stack Setup with MySQL and phpMyAdmin on Ubuntu 24.04</h1>
+  <p><strong>Author:</strong> Satya</p>
+
+  <h2>Step 1: Update and Upgrade System Packages</h2>
+  <pre>sudo apt update -y && sudo apt upgrade -y</pre>
+
+  <h2>Step 2: Install Nginx and Utilities</h2>
+  <pre>sudo apt install -y nginx net-tools curl unzip gnupg lsb-release ca-certificates</pre>
+
+  <h2>Step 3: Start and Enable Nginx</h2>
+  <pre>
+sudo systemctl enable nginx
+sudo systemctl start nginx
+sudo systemctl status nginx
+  </pre>
+
+  <h2>Step 4: Install MySQL (Latest Official)</h2>
+  <pre>sudo apt install -y mysql-server</pre>
+
+  <h3>Start and Enable MySQL</h3>
+  <pre>
+sudo systemctl enable mysql
+sudo systemctl start mysql
+sudo systemctl status mysql
+  </pre>
+
+  <h2>Step 5: Secure MySQL Installation</h2>
+  <pre>sudo mysql_secure_installation</pre>
+
+  <h2>Step 6: Install PHP 8.3 and Extensions</h2>
+  <pre>
+sudo apt install -y php8.3 php8.3-cli php8.3-fpm php8.3-mysql php8.3-mbstring php8.3-zip php8.3-gd php8.3-curl php8.3-xml php8.3-common
+  </pre>
+
+  <h2>Step 7: Install phpMyAdmin</h2>
+  <pre>sudo apt install -y phpmyadmin</pre>
+
+  <h2>Step 8: Create Symbolic Link for phpMyAdmin</h2>
+  <pre>sudo ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin</pre>
+
+  <h2>Step 9: Create MySQL User for phpMyAdmin</h2>
+  <pre>
+sudo mysql -u root -p
+  </pre>
+  <p>Inside MySQL shell:</p>
+  <pre>
+CREATE USER 'satya'@'localhost' IDENTIFIED BY 'satya123';
+GRANT ALL PRIVILEGES ON *.* TO 'satya'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+EXIT;
+  </pre>
+
+  <h2>Step 10: Configure Nginx for phpMyAdmin</h2>
+  <pre>sudo nano /etc/nginx/conf.d/phpmyadmin.conf</pre>
+  <p>Paste the following:</p>
+  <pre>
+server {
+  listen 80;
+  server_name your-server-ip;
+  root /usr/share/phpmyadmin;
+  index index.php index.html;
+
+  location / {
+    try_files $uri $uri/ =404;
+  }
+
+  location ~ \.php$ {
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+  }
+
+  location ~ /\.ht {
+    deny all;
+  }
+}
+  </pre>
+
+  <h2>Step 11: Test and Reload Nginx</h2>
+  <pre>
+sudo nginx -t
+sudo systemctl reload nginx
+  </pre>
+
+  <h2>Step 12: Set Proper Permissions</h2>
+  <pre>
+sudo chown -R www-data:www-data /usr/share/phpmyadmin
+sudo chmod -R 755 /usr/share/phpmyadmin
+  </pre>
+
+  <h2>Step 13: Configure UFW Firewall</h2>
+  <pre>
+sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw allow 3306
+sudo ufw enable
+sudo ufw reload
+sudo ufw status verbose
+  </pre>
+
+  <h2>Step 14: Final Restart of All Services</h2>
+  <pre>
+sudo systemctl reload nginx
+sudo systemctl restart mysql
+sudo systemctl restart php8.3-fpm
+  </pre>
+
+  <h2>Step 15: Access phpMyAdmin</h2>
+  <ul>
+    <li>URL: <code>http://your-server-ip/phpmyadmin</code></li>
+    <li>Username: <code>satya</code></li>
+    <li>Password: <code>satya123</code></li>
+  </ul>
+
+</body>
+</html>

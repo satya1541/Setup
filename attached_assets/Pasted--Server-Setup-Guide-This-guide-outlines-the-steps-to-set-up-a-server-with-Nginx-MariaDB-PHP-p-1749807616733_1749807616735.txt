@@ -1,0 +1,123 @@
+# Server Setup Guide
+
+This guide outlines the steps to set up a server with Nginx, MariaDB, PHP, phpMyAdmin, and Mosquitto. Each command is detailed to ensure a smooth installation and configuration process.
+
+## Update and Upgrade System Packages
+```bash
+sudo apt-get update -y && sudo apt-get upgrade -y
+```
+Update the package list and upgrade all packages to the latest version.
+
+## Install Net Tools
+```bash
+sudo apt-get install net-tools -y
+```
+Install networking utilities, including `ifconfig`.
+
+## Install and Configure Nginx
+```bash
+sudo apt-get install nginx -y
+sudo systemctl enable nginx && sudo systemctl start nginx
+sudo systemctl status nginx
+```
+Install Nginx, enable it to start on boot, and check its status.
+
+## Install and Configure MariaDB
+```bash
+sudo apt-get install mariadb-server -y
+sudo systemctl start mariadb && sudo systemctl enable mariadb
+sudo systemctl status mariadb
+```
+Install MariaDB server, start it, enable it to start on boot, and check its status.
+
+## Install PHP and Necessary Extensions
+```bash
+sudo apt-get install php php-cli php-mysql php-mbstring php-zip php-gd php-json php-curl php-fpm -y
+```
+Install PHP along with commonly used extensions.
+
+## Enable Unattended Upgrades
+```bash
+sudo apt install unattended-upgrades -y
+```
+Install unattended upgrades for automatic security updates.
+
+## Install phpMyAdmin
+```bash
+sudo apt install phpmyadmin -y
+sudo ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
+```
+Install phpMyAdmin and create a symbolic link for easy access.
+
+## Secure MariaDB Installation
+```bash
+sudo mysql_secure_installation
+```
+Run the security script to secure your MariaDB installation.
+
+## Configure phpMyAdmin in Nginx
+```bash
+sudo nano /etc/nginx/conf.d/phpmyadmin.conf
+sudo vi /etc/nginx/conf.d/phpmyadmin.conf
+sudo nginx -t
+sudo systemctl reload nginx
+```
+Create and edit the configuration file for phpMyAdmin in Nginx, test the configuration, and reload Nginx.
+
+## Set Permissions for phpMyAdmin
+```bash
+sudo chown -R www-data:www-data /usr/share/phpmyadmin
+sudo chmod -R 755 /usr/share/phpmyadmin
+```
+Set ownership and permissions for phpMyAdmin.
+
+## Configure UFW Firewall
+```bash
+sudo ufw enable
+sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw allow 3306 && sudo ufw reload
+sudo ufw status verbose
+```
+Enable UFW and allow necessary ports for SSH, HTTP, HTTPS, and MariaDB.
+
+## Install and Configure Mosquitto
+```bash
+sudo systemctl status mosquitto
+sudo ufw allow 1883
+sudo systemctl restart mosquitto
+sudo systemctl status mosquitto
+```
+Check Mosquitto status, allow the MQTT port, and restart the Mosquitto service.
+
+## MQTT Subscription Commands
+```bash
+mosquitto_sub -h 18.61.72.146 -t test/topic
+mosquitto_sub -h 18.61.72.146 -t test/topic -u "satya" -P "satya123"
+mosquitto_sub -h localhost -t test/topic -u satya -P satya123
+```
+Use `mosquitto_sub` to subscribe to MQTT topics with various options.
+
+## View and Edit Mosquitto Configuration
+```bash
+sudo cat /etc/mosquitto/passwd
+vi /etc/mosquitto/mosquitto.conf
+```
+View the Mosquitto password file and edit the Mosquitto configuration.
+
+## Network Utilities and File Listing
+```bash
+ifconfig
+ls
+```
+Check network configurations and list directory contents.
+
+## View Command History
+```bash
+history
+```
+Display the history of executed commands.
+
+## Summary
+This guide covers the essential steps to set up a fully functional server environment with Nginx, MariaDB, PHP, phpMyAdmin, and Mosquitto. Follow each section carefully to ensure a successful installation and configuration.
