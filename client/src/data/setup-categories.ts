@@ -36,17 +36,7 @@ export const setupCategories: SetupCategory[] = [
         icon: 'Database',
         category: 'web-servers'
       },
-      {
-        id: 'lamp-stack',
-        title: 'LAMP Stack Setup',
-        description: 'Linux, Apache, MySQL, PHP stack installation and configuration',
-        difficulty: 'Intermediate',
-        duration: '25 minutes',
-        technologies: ['Linux', 'Apache', 'MySQL', 'PHP'],
-        featured: true,
-        icon: 'Globe',
-        category: 'web-servers'
-      },
+
       {
         id: 'mean-stack',
         title: 'MEAN Stack Setup',
@@ -107,17 +97,7 @@ export const setupCategories: SetupCategory[] = [
     description: 'Docker, Kubernetes, and container orchestration setups',
     icon: 'Box',
     guides: [
-      {
-        id: 'docker-setup',
-        title: 'Docker Installation',
-        description: 'Docker Engine and Docker Compose setup on Ubuntu',
-        difficulty: 'Beginner',
-        duration: '15 minutes',
-        technologies: ['Docker', 'Docker Compose'],
-        featured: true,
-        icon: 'Box',
-        category: 'containers'
-      },
+
       {
         id: 'kubernetes-setup',
         title: 'Kubernetes Cluster',

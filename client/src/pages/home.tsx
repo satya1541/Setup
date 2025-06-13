@@ -38,16 +38,20 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
+      <header className="sticky top-0 z-50 glass-effect border-b border-border/50 shadow-elegant">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <Code className="w-5 h-5 text-white" />
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 gradient-primary rounded-2xl flex items-center justify-center shadow-lg animate-pulse-gentle relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-slide-in"></div>
+                <Code className="w-6 h-6 text-white relative z-10" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">DevSetup Hub</h1>
-                <p className="text-xs text-muted-foreground hidden sm:block">Complete setup guides for developers</p>
+                <h1 className="text-xl font-bold text-gradient">DevSetup Hub</h1>
+                <p className="text-xs text-muted-foreground hidden sm:block flex items-center">
+                  <Zap className="w-3 h-3 mr-1 text-primary" />
+                  Complete setup guides for developers
+                </p>
               </div>
             </div>
             
@@ -58,7 +62,7 @@ export default function Home() {
                   placeholder="Search guides..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-64 pl-10"
+                  className="w-64 pl-10 pr-4 h-10 bg-muted/50 border-muted-foreground/20 focus:border-primary/50 focus:bg-background/80 transition-all duration-200 rounded-xl"
                 />
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               </div>
@@ -67,12 +71,12 @@ export default function Home() {
                 variant="ghost"
                 size="icon"
                 onClick={toggleTheme}
-                className="h-9 w-9"
+                className="h-10 w-10 hover:bg-muted/50 transition-all duration-200 rounded-xl"
               >
                 {theme === "dark" ? (
-                  <Sun className="h-4 w-4" />
+                  <Sun className="h-4 w-4 text-yellow-500" />
                 ) : (
-                  <Moon className="h-4 w-4" />
+                  <Moon className="h-4 w-4 text-blue-600" />
                 )}
               </Button>
             </div>
@@ -83,30 +87,72 @@ export default function Home() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative overflow-hidden rounded-2xl gradient-bg text-white mb-12"
+          className="relative overflow-hidden rounded-3xl gradient-bg text-white mb-16 shadow-2xl"
         >
-          <div className="absolute inset-0 bg-black/20"></div>
-          <div className="relative p-8 md:p-12 text-center">
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+          
+          {/* Floating decorative elements */}
+          <div className="absolute top-4 left-4 w-8 h-8 bg-white/10 rounded-full animate-float" style={{ animationDelay: '0s' }}></div>
+          <div className="absolute top-12 right-12 w-6 h-6 bg-white/15 rounded-full animate-float" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute bottom-8 left-16 w-4 h-4 bg-white/20 rounded-full animate-float" style={{ animationDelay: '2s' }}></div>
+          
+          <div className="relative p-8 md:p-16 text-center">
             <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
+              initial={{ scale: 0.8, rotate: -10 }}
+              animate={{ scale: 1, rotate: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6 backdrop-blur-sm"
+              className="w-24 h-24 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-8 backdrop-blur-sm shadow-2xl animate-float relative"
             >
-              <Zap className="w-10 h-10" />
+              <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/30 to-white/20 rounded-3xl"></div>
+              <Zap className="w-12 h-12 relative z-10" />
             </motion.div>
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight"
+            >
               DevSetup Hub
-            </h1>
-            <p className="text-xl md:text-2xl opacity-90 mb-6 max-w-3xl mx-auto">
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="text-xl md:text-3xl opacity-95 mb-8 max-w-4xl mx-auto font-light leading-relaxed"
+            >
               Complete, step-by-step setup guides for modern development environments
-            </p>
-            <p className="text-lg opacity-80 max-w-2xl mx-auto">
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="text-lg md:text-xl opacity-85 max-w-3xl mx-auto leading-relaxed mb-8"
+            >
               From web servers to databases, containers to development tools - get your environment ready in minutes
-            </p>
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 1 }}
+              className="flex flex-wrap justify-center gap-4 text-sm opacity-80"
+            >
+              <div className="flex items-center space-x-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span>Always Updated</span>
+              </div>
+              <div className="flex items-center space-x-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <span>Production Ready</span>
+              </div>
+              <div className="flex items-center space-x-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
+                <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                <span>Community Tested</span>
+              </div>
+            </motion.div>
           </div>
         </motion.div>
 
