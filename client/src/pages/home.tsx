@@ -20,6 +20,12 @@ export default function Home() {
       setLocation('/lemp-guide');
     } else if (guideId === 'mqtt-setup') {
       setLocation('/mqtt-guide');
+    } else if (guideId === 'phpmyadmin-import-size') {
+      setLocation('/phpmyadmin-import-guide');
+    } else if (guideId === 'phpmyadmin-504-timeout') {
+      setLocation('/phpmyadmin-504-guide');
+    } else if (guideId === 'secure-mqtt-setup') {
+      setLocation('/secure-mqtt-guide');
     } else {
       // For now, show a coming soon message for other guides
       alert(`${guideId} guide coming soon!`);

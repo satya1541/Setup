@@ -88,6 +88,28 @@ export const setupCategories: SetupCategory[] = [
         featured: false,
         icon: 'Database',
         category: 'databases'
+      },
+      {
+        id: 'phpmyadmin-import-size',
+        title: 'Import Size Increase in phpMyAdmin',
+        description: 'Increase phpMyAdmin import size to 600MB on Ubuntu 24.04 with Nginx',
+        difficulty: 'Intermediate',
+        duration: '10 minutes',
+        technologies: ['phpMyAdmin', 'PHP', 'Nginx', 'Ubuntu'],
+        featured: true,
+        icon: 'Upload',
+        category: 'databases'
+      },
+      {
+        id: 'phpmyadmin-504-timeout',
+        title: 'Resolving 504 Gateway Timeout (phpMyAdmin)',
+        description: 'Fix 504 Gateway Timeout and upstream timeout errors when importing large SQL files',
+        difficulty: 'Intermediate',
+        duration: '15 minutes',
+        technologies: ['phpMyAdmin', 'Nginx', 'PHP-FPM', 'MySQL'],
+        featured: true,
+        icon: 'AlertTriangle',
+        category: 'databases'
       }
     ]
   },
@@ -167,6 +189,17 @@ export const setupCategories: SetupCategory[] = [
         technologies: ['MQTT', 'Mosquitto', 'SSL/TLS', 'Nginx', 'WebSocket'],
         featured: true,
         icon: 'Radio',
+        category: 'messaging'
+      },
+      {
+        id: 'secure-mqtt-setup',
+        title: 'Secure MQTT Setup',
+        description: 'Complete secure MQTT broker setup with TLS encryption and Nginx configuration',
+        difficulty: 'Advanced',
+        duration: '35 minutes',
+        technologies: ['MQTT', 'TLS', 'Nginx', 'Certificates'],
+        featured: true,
+        icon: 'Shield',
         category: 'messaging'
       }
     ]

@@ -1,0 +1,127 @@
+# Documentation for Secure MQTT Setup and Nginx Configuration
+
+## MQTT Commands
+
+### Subscribing to a Topic
+To subscribe to a topic using `mosquitto_sub` with TLS encryption, use the following command:
+
+```bash
+
+mosquitto_sub -h mqtt.thynxai.tech -p 8883 -t "test/topic" --cafile /etc/mosquitto/certs/ca.pem --cert /etc/mosquitto/certs/mqtt.pem --key /etc/mosquitto/certs/mqtt.key -u satya -P satya123
+
+```
+
+#### Explanation:
+- `-h mqtt.thynxai.tech`: Specifies the MQTT broker's hostname.
+- `-p 8883`: Connects to the MQTT broker over TLS on port 8883.
+- `-t "test/topic"`: Subscribes to the topic `test/topic`.
+- `--cafile /etc/mosquitto/certs/ca.pem`: Specifies the CA certificate for verifying the broker.
+- `--cert /etc/mosquitto/certs/mqtt.pem`: Specifies the client certificate.
+- `--key /etc/mosquitto/certs/mqtt.key`: Specifies the client private key.
+- `-u satya`: MQTT username.
+- `-P satya123`: MQTT password.
+
+### Publishing to a Topic
+To publish a message to a topic using `mosquitto_pub` with TLS encryption, use the following command:
+
+```bash
+
+mosquitto_pub -h mqtt.thynxai.tech -p 8883 -t "test/topic" -m "Hello, MQTT!" --cafile /etc/mosquitto/certs/ca.pem --cert /etc/mosquitto/certs/mqtt.pem --key /etc/mosquitto/certs/mqtt.key -u satya -P satya123
+
+```
+
+#### Explanation:
+- `-h mqtt.thynxai.tech`: Specifies the MQTT broker's hostname.
+- `-p 8883`: Connects to the MQTT broker over TLS on port 8883.
+- `-t "test/topic"`: Publishes to the topic `test/topic`.
+- `-m "Hello, MQTT!"`: Message payload.
+- `--cafile /etc/mosquitto/certs/ca.pem`: Specifies the CA certificate for verifying the broker.
+- `--cert /etc/mosquitto/certs/mqtt.pem`: Specifies the client certificate.
+- `--key /etc/mosquitto/certs/mqtt.key`: Specifies the client private key.
+- `-u satya`: MQTT username.
+- `-P satya123`: MQTT password.
+
+## Nginx Configuration
+
+Below is the Nginx configuration for serving the MQTT broker over HTTPS with WebSocket support.
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name mqtt.thynxai.tech;
+
+    ssl_certificate /etc/mosquitto/certs/mqtt.pem;
+    ssl_certificate_key /etc/mosquitto/certs/mqtt.key;
+    ssl_trusted_certificate /etc/mosquitto/certs/ca.pem;
+
+    location / {
+        proxy_pass https://127.0.0.1:8883;
+        proxy_ssl_verify off;  # Optional: Disable SSL verification for backend
+        proxy_ssl_protocols TLSv1.2 TLSv1.3;
+        proxy_ssl_ciphers HIGH:!aNULL:!MD5;
+    }
+
+    # WebSocket Support (if needed for MQTT over WebSocket)
+    location /mqtt {
+        proxy_pass https://127.0.0.1:8883;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+#### Key Points:
+- `listen 443 ssl;`: Enables SSL on port 443.
+- `server_name mqtt.thynxai.tech;`: Specifies the domain name.
+- `ssl_certificate`, `ssl_certificate_key`, `ssl_trusted_certificate`: Paths to the SSL certificate, key, and CA certificate.
+- `proxy_pass https://127.0.0.1:8883;`: Proxies requests to the local MQTT broker on port 8883.
+- WebSocket support configured under `/mqtt` location block.
+
+## MQTT Configuration
+
+The following configuration is used for the MQTT broker (Mosquitto):
+
+```bash
+# Enable persistence
+persistence true
+persistence_location /var/lib/mosquitto/
+
+# Password file
+password_file /etc/mosquitto/passwd
+
+# Listener for secure MQTT (TLS) on port 8883
+listener 8883
+protocol mqtt
+
+# TLS configuration
+cafile /etc/mosquitto/certs/ca.pem
+certfile /etc/mosquitto/certs/mqtt.pem
+keyfile /etc/mosquitto/certs/mqtt.key
+
+# Allow only encrypted connections
+require_certificate true
+
+# Logging
+log_type all
+log_dest file /var/log/mosquitto/mosquitto.log
+
+# Include additional configurations
+include_dir /etc/mosquitto/conf.d
+```
+
+#### Key Points:
+- `persistence true`: Enables message persistence.
+- `password_file`: Path to the password file for client authentication.
+- `listener 8883`: Configures the broker to listen on port 8883 with TLS.
+- `require_certificate true`: Requires client certificates for authentication.
+- `log_type all`: Logs all types of events.
+- `log_dest file /var/log/mosquitto/mosquitto.log`: Logs to a specified file.
+
+## Cloudflare Web Setting
+
+Ensure the proxy setting (orange cloud) is turned off for `mqtt.thynxai.tech` in Cloudflare to avoid interference with the MQTT protocol.
+
+---
+
+This documentation provides a comprehensive guide to setting up a secure MQTT broker with Nginx reverse proxy and TLS encryption. Ensure all file paths and credentials are correctly configured to maintain security and functionality.

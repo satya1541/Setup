@@ -1,0 +1,197 @@
+
+### Documentation for Resolving 504 Gateway Timeout (Upstream Timed Out) Error
+
+This guide explains how to adjust Nginx, PHP-FPM, and phpMyAdmin settings to resolve 504 Gateway Timeout and upstream timed out errors when importing large SQL files via phpMyAdmin.
+
+---
+
+### 1. Increase Timeout Settings in Nginx
+
+#### Edit Nginx Configuration File
+
+Open the Nginx configuration file:
+
+```bash
+sudo vi /etc/nginx/nginx.conf
+```
+
+Add or update the following settings inside the `http` block:
+
+```nginx
+http {
+    ...
+    # Increase client body size to accommodate larger SQL files
+    client_max_body_size 600M;
+
+    # Increase buffer and timeout settings for long-running requests
+    fastcgi_buffers 16 16k;
+    fastcgi_buffer_size 32k;
+    fastcgi_read_timeout 600s;
+    proxy_read_timeout 600s;
+    proxy_connect_timeout 600s;
+    proxy_send_timeout 600s;
+    send_timeout 600s;
+}
+```
+
+Save and close the file (press `Esc`, then type `:wq`).
+
+#### Test and Restart Nginx
+
+Test the Nginx configuration:
+
+```bash
+sudo nginx -t
+```
+
+Restart Nginx to apply the changes:
+
+```bash
+sudo systemctl restart nginx
+```
+
+---
+
+### 2. Increase Timeout Settings in PHP-FPM
+
+#### Edit PHP-FPM Configuration
+
+Open the PHP-FPM configuration file:
+
+```bash
+sudo vi /etc/php/8.2/fpm/php-fpm.conf
+```
+
+Add or modify the following setting under the `[global]` section:
+
+```ini
+request_terminate_timeout = 600
+```
+
+Save and close the file.
+
+#### Edit PHP Configuration for FPM
+
+Open the `php.ini` file for PHP-FPM:
+
+```bash
+sudo vi /etc/php/8.2/fpm/php.ini
+```
+
+Update the following settings:
+
+```ini
+max_execution_time = 600
+max_input_time = 600
+memory_limit = 512M
+post_max_size = 600M
+upload_max_filesize = 600M
+```
+
+Save and close the file.
+
+#### Restart PHP-FPM
+
+Restart PHP-FPM to apply the changes:
+
+```bash
+sudo systemctl restart php8.2-fpm
+```
+
+---
+
+### 3. Increase Timeout Settings in phpMyAdmin
+
+#### Edit phpMyAdmin Configuration
+
+Open the phpMyAdmin configuration file:
+
+```bash
+sudo vi /etc/phpmyadmin/config.inc.php
+```
+
+Add the following line to set the execution time limit for large operations:
+
+```php
+$cfg['ExecTimeLimit'] = 600;
+```
+
+Save and close the file.
+
+---
+
+### 4. Alternative: Use MySQL Command Line for Large Imports
+
+For large SQL files, bypass phpMyAdmin and import the file directly using the MySQL command line.
+
+#### Steps for Importing Large SQL Files via Command Line
+
+1. Upload the SQL file to your server (e.g., using `scp`):
+
+    ```bash
+    scp /path/to/your/sqlfile.sql user@server:/tmp/
+    ```
+
+2. Import the SQL file into your MySQL database:
+
+    ```bash
+    mysql -u username -p database_name < /tmp/sqlfile.sql
+    ```
+
+---
+
+### 5. Debugging Logs
+
+If the issue persists after adjusting the configurations, review the relevant logs for insights:
+
+#### Nginx Logs
+
+Monitor real-time logs for errors:
+
+```bash
+sudo tail -f /var/log/nginx/error.log
+sudo tail -f /var/log/nginx/access.log
+```
+
+#### PHP-FPM Logs
+
+Monitor real-time PHP-FPM logs:
+
+```bash
+sudo tail -f /var/log/php8.2-fpm.log
+```
+
+---
+
+### 6. Additional Considerations
+
+#### Cloudflare Configuration
+
+If using Cloudflare:
+
+- Enable Development Mode to bypass caching and optimize performance during the import.
+- Temporarily disable Cloudflare by switching to DNS-only mode in the Cloudflare dashboard.
+
+#### Increase PHP Upload Limits
+
+Ensure that PHP upload limits are sufficient in the `php.ini` file:
+
+```ini
+upload_max_filesize = 600M
+post_max_size = 600M
+max_execution_time = 600
+max_input_time = 600
+```
+
+---
+
+### 7. Final Steps
+
+After applying the configurations:
+
+1. Retry the import process via phpMyAdmin.
+2. Monitor logs for specific error messages if the issue persists.
+
+---
+
+This guide should help address the 504 Gateway Timeout and upstream timed out errors during SQL imports. For further assistance, review the logs and adjust configurations as needed.
